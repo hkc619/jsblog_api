@@ -5,7 +5,15 @@ import "dotenv/config.js";
 
 import router from "./routes/blog-route.js";
 
-mongoose.connect("mongodb://localhost:27017/testblogdb");
+mongoose
+  .connect("mongodb://localhost:27017/testblogdb")
+  .then(() => {
+    console.log("Connect to MongoDB successfully.");
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
 const app = express();
 const PORT = 3000;
 

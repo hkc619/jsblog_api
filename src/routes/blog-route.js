@@ -8,6 +8,7 @@ router.use((req, res, next) => {
   console.log("A request is coming into API.");
   next();
 });
+
 // Create a blog post
 router.post("/", async (req, res) => {
   console.log(req.body);
