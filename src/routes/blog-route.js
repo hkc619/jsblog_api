@@ -35,6 +35,7 @@ router.post("/", async (req, res) => {
       return data[0];
     });
   const postId = topData.id + 1;
+
   // compose to a new post
   const newPost = new Blog({
     id: postId,
@@ -45,6 +46,7 @@ router.post("/", async (req, res) => {
     createdAt: UTCTime,
     updatedAt: UTCTime,
   });
+
   try {
     await newPost.save();
     res.status(200);
@@ -67,20 +69,26 @@ router.get("/:blogId", async (req, res) => {
   console.log(req.params.blogId);
 });
 
-router.patch("/test", async (req, res) => {
-  Blog.find()
-    .sort({ id: -1 })
-    .limit(1)
-    .then((data) => {
-      res.send(data);
-    });
-});
-
 // Get all blog posts
 router.get("/", async (req, res) => {
   // Get the blog post by key term
   if (req.query.term) {
-    console.log(req.query);
+    const regex = req.query.term;
+    Blog.find({
+      $or: [
+        { title: new RegExp(regex, "i") },
+        { content: new RegExp(regex, "i") },
+        { category: new RegExp(regex, "i") },
+        { tags: new RegExp(regex, "i") },
+      ],
+    })
+      .then((data) => {
+        res.status(200);
+        res.send(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   } else {
     Blog.find()
       .then((data) => {
@@ -105,6 +113,7 @@ router.put("/:blogId", async (req, res) => {
   const oldData = await Blog.find({ id: req.params.blogId }).then((data) => {
     return data;
   });
+
   // if new data is blank means keep old data
   Blog.updateOne(
     { id: req.params.blogId },
