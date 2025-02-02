@@ -21,11 +21,20 @@ router.post("/", async (req, res) => {
   const NowTime = new Date(time);
   const UTCTime = NowTime.toUTCString();
 
-  // get id count
+  /* get id count (need to deprecated)
   const postId = await Blog.countDocuments().then((data) => {
     return data + 1;
   });
+  */
 
+  // get the newest id
+  const topData = await Blog.find()
+    .sort({ id: -1 })
+    .limit(1)
+    .then((data) => {
+      return data[0];
+    });
+  const postId = topData.id + 1;
   // compose to a new post
   const newPost = new Blog({
     id: postId,
@@ -56,6 +65,15 @@ router.get("/:blogId", async (req, res) => {
       res.send("Cannot get data.");
     });
   console.log(req.params.blogId);
+});
+
+router.patch("/test", async (req, res) => {
+  Blog.find()
+    .sort({ id: -1 })
+    .limit(1)
+    .then((data) => {
+      res.send(data);
+    });
 });
 
 // Get all blog posts
