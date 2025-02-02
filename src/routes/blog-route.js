@@ -60,18 +60,20 @@ router.get("/:blogId", async (req, res) => {
 
 // Get all blog posts
 router.get("/", async (req, res) => {
-  Blog.find()
-    .then((data) => {
-      res.send(data);
-    })
-    .catch(() => {
-      res.status(500);
-      res.send("Cannot get data.");
-    });
+  // Get the blog post by key term
+  if (req.query.term) {
+    console.log(req.query);
+  } else {
+    Blog.find()
+      .then((data) => {
+        res.send(data);
+      })
+      .catch(() => {
+        res.status(500);
+        res.send("Cannot get data.");
+      });
+  }
 });
-
-// Get the blog post by key term
-//router.get("?term=", (req, res) => {});
 
 // Update the blog post by ID
 router.put("/:blogId", async (req, res) => {
@@ -105,8 +107,19 @@ router.put("/:blogId", async (req, res) => {
       res.status(500);
       console.log(error);
     });
-  //Blog.updateOne({ id: req.params.blogId }, {});
 });
+
 // Delete the blog post by ID
+router.delete("/:blogId", async (req, res) => {
+  Blog.deleteOne({ id: req.params.blogId })
+    .then(() => {
+      res.status(200);
+      res.send("Delete Successfully.");
+    })
+    .catch((error) => {
+      res.status(500);
+      console.error(error);
+    });
+});
 
 export default router;
