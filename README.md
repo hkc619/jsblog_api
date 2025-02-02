@@ -26,14 +26,11 @@ You should create a RESTful API for a personal blogging platform. The API should
 
 ```json
 {
-  "_id": "679848cd95bbc91dfe8530fc",
   "id": 1,
   "title": "Test Post 0119",
   "content": "lorem",
   "category": "Test",
-  "tags": ["Test"],
-  "createdAt": "Tue, 28 Jan 2025 03:02:37 GMT",
-  "updatedAt": "Tue, 28 Jan 2025 03:02:37 GMT"
+  "tags": ["Test"]
 }
 ```
 
