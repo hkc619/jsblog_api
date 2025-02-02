@@ -1,11 +1,14 @@
+"use strict";
+
 import Router from "express";
+import chalk from "chalk";
 
 import Blog from "../models/blogSchema.js";
 
 const router = Router();
 
 router.use((req, res, next) => {
-  console.log("A request is coming into API.");
+  console.log(chalk.green("A request is coming into API."));
   next();
 });
 
@@ -14,20 +17,24 @@ router.post("/", async (req, res) => {
   console.log(req.body);
   let { title, content, category, tags } = req.body;
   console.log(title, content, category, tags);
-  // get id count
-
   const time = Date.now();
   const NowTime = new Date(time);
   const UTCTime = NowTime.toUTCString();
+
+  // get id count
+  const postId = await Blog.countDocuments().then((data) => {
+    return data + 1;
+  });
+
   // compose to a new post
   const newPost = new Blog({
-    id,
-    title,
-    content,
-    category,
-    tags,
-    UTCTime,
-    UTCTime,
+    id: postId,
+    title: title,
+    content: content,
+    category: category,
+    tags: tags,
+    createdAt: UTCTime,
+    updatedAt: UTCTime,
   });
   try {
     await newPost.save();
@@ -49,6 +56,18 @@ router.get("/:blogId", async (req, res) => {
       res.send("Cannot get data.");
     });
   console.log(req.params.blogId);
+});
+
+// Get all blog posts
+router.get("/", async (req, res) => {
+  Blog.find()
+    .then((data) => {
+      res.send(data);
+    })
+    .catch(() => {
+      res.status(500);
+      res.send("Cannot get data.");
+    });
 });
 
 // Get the blog post by key term
